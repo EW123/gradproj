@@ -45,13 +45,13 @@ def main():
 						shuffle=True,num_workers=2)
 
 	valset=torchvision.datasets.ImageFolder(valdir,transforms.Compose([
-				transforms.Scale(256),
+				transforms.Resize(256),
 				transforms.CenterCrop(224),
 				transforms.ToTensor(),
 				normalize,
 				]))
 	
-	valloader=torch.utils.data.DataLoader(valset,bach_size=4,
+	valloader=torch.utils.data.DataLoader(valset,batch_size=4,
 					      shuffle=False,num_workers=2)
 
 	net=Net()
@@ -61,6 +61,7 @@ def main():
 
 	for epoch in range(2):
 
+		print("epoch %d" %epoch)
 		running_loss=0.0
 		for i,data in enumerate(trainloader,0):
 
@@ -69,7 +70,19 @@ def main():
 			inputs,labels=Variable(inputs),Variables(labels)
 
 			optimizer.zero_grad()
+
+			outputs=net(inputs)
 			
+			loss=criterion(outputs,labels)
+
+			loss.backward()
+
+			optimizer.step()
+			
+			running_loss+=loss.data[0]
+			if i%2000==0:
+				print("[%d %d] loss:%.3f" %epoch %i %running_loss)
+
 			
 
 if __name__=='__main__':
