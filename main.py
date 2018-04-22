@@ -32,25 +32,25 @@ class Net(nn.Module):
 
 
 def main():
+	print("enter main function")
 	normalize=transforms.Normalize(mean=[0.485,0.456,0.406],
                                       std=[0.229,0.224,0.225])
 
 	trainset=torchvision.datasets.ImageFolder(traindir,transform=transforms.Compose(
-                [transforms.ToTensor(),
-                 normalize,
+                [normalize,
                  transforms.RandomResizedCrop(224),
-                 transforms.RandomHorizontalFlip(),]))
-	
+                 transforms.RandomHorizontalFlip(),
+		 transforms.ToTensor(),]))
+	print("prepare trainloader")
 	trainloader=torch.utils.data.DataLoader(trainset,batch_size=4,
 						shuffle=True,num_workers=2)
 
 	valset=torchvision.datasets.ImageFolder(valdir,transforms.Compose([
 				transforms.Resize(256),
 				transforms.CenterCrop(224),
-				transforms.ToTensor(),
 				normalize,
-				]))
-	
+				transforms.ToTensor(),]))
+	print("prepare valloader")
 	valloader=torch.utils.data.DataLoader(valset,batch_size=4,
 					      shuffle=False,num_workers=2)
 
